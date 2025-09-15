@@ -17,14 +17,14 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-white animate-fadeIn">
-      <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-8">
+    <div className="p-6 flex items-center justify-center bg-gradient-to-br from-blue-300 to-white animate-fadeIn">
+      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">
         <FormHeader />
         <HorseBasicInfo formData={formData} setFormData={setFormData} />
         <Allergies formData={formData} setFormData={setFormData} />
         <FeedingGoals formData={formData} setFormData={setFormData} />
         <PastureAccess formData={formData} setFormData={setFormData} />
-        <SubmitButton />
+        <SubmitButton formData={formData} />
       </div>
     </div>
   );

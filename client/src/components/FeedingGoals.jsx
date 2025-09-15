@@ -3,7 +3,8 @@ const goals = [
   "dodanie energii",
   "budowa masy mięśniowej",
   "utrata tkanki tłuszczowej",
-  "nabranie tkanki tłuszczowej"
+  "nabranie tkanki tłuszczowej",
+  "utrzymanie zbilansowanej diety"
 ];
 
 export default function FeedingGoals({ formData, setFormData }) {

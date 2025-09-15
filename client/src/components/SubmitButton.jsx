@@ -1,16 +1,28 @@
-export default function SubmitButton() {
+import { useNavigate } from "react-router-dom";
+
+export default function SubmitButton({ formData }) {
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Formularz wysłany!");
+
+    const { workload, pasture } = formData;
+
+    if (!workload || !pasture) {
+      alert("Proszę uzupełnić wszystkie wymagane pola: użytkowanie, pastwisko.");
+      return;
+    }
+
+    navigate("/recommendations", { state: { formData } });
   };
 
   return (
-    <div className="text-center">
+    <div className="mt-6">
       <button
         onClick={handleSubmit}
-        className="bg-blue-600 text-white px-6 py-2 rounded-md shadow hover:bg-blue-700 transition"
+        className="w-full py-3 px-4 rounded-xl bg-blue-600 text-white font-semibold text-lg shadow hover:bg-blue-700 transition transform hover:scale-[1.02]"
       >
-        Wyślij formularz
+        Wyślij
       </button>
     </div>
   );
