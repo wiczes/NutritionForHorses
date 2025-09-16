@@ -9,10 +9,10 @@ const sampleOptions = [
     match: 97,
     price: "980 zł/miesiąc",
     items: [
-      { name: "Granulat", img: "/public/granulat.jpg", desc: "Pełnoporcjowy granulat dla koni sportowych.", dose: "Dawkowanie: 1 kg dziennie" },
-      { name: "Musli", img: "/public/musli.png", desc: "Musli z dodatkiem ziół i oleju lnianego.", dose: "Dawkowanie: 2 kg dziennie" },
-      { name: "Witaminy", img: "/public/witaminy.jpg", desc: "Kompleks witaminowy dla wsparcia odporności.", dose: "Dawkowanie: 1 miarka = 15 g" },
-      { name: "Elektrolity", img: "/public/elektrolity.jpg", desc: "Suplement elektrolitowy na lato.", dose: "Dawkowanie: 1 miarka = 10 g" }
+      { name: "Granulat", img: "granulat.jpg", desc: "Pełnoporcjowy granulat dla koni sportowych.", dose: "Dawkowanie: 1 kg dziennie" },
+      { name: "Musli", img: "musli.png", desc: "Musli z dodatkiem ziół i oleju lnianego.", dose: "Dawkowanie: 2 kg dziennie" },
+      { name: "Witaminy", img: "witaminy.jpg", desc: "Kompleks witaminowy dla wsparcia odporności.", dose: "Dawkowanie: 1 miarka = 15 g" },
+      { name: "Elektrolity", img: "elektrolity.jpg", desc: "Suplement elektrolitowy na lato.", dose: "Dawkowanie: 1 miarka = 10 g" }
     ]
   },
   {
@@ -30,9 +30,9 @@ const sampleOptions = [
     match: 75,
     price: "220 zł/miesiąc",
     items: [
-      { name: "Owies", img: "Owies.png", desc: "Owies płatkowany.", dose: "Dawkowanie: 2 kg dziennie" },
-      { name: "Sieczka", img: "Sieczka.jpg", desc: "Sieczka z lucerny.", dose: "Dawkowanie: 2 kg dziennie" },
-      { name: "Witaminy", img: "Witaminy.jpg", desc: "Podstawowy kompleks witaminowy. Dawkowanie: 1 miarka dziennie.", dose: "Dawkowanie: 1 miarka = 15 g" }
+      { name: "Owies", img: "owies.png", desc: "Owies płatkowany.", dose: "Dawkowanie: 2 kg dziennie" },
+      { name: "Sieczka", img: "sieczka.jpg", desc: "Sieczka z lucerny.", dose: "Dawkowanie: 2 kg dziennie" },
+      { name: "Witaminy", img: "witaminy.jpg", desc: "Podstawowy kompleks witaminowy. Dawkowanie: 1 miarka dziennie.", dose: "Dawkowanie: 1 miarka = 15 g" }
     ]
   }
 ];
