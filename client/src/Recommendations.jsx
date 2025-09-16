@@ -9,10 +9,10 @@ const sampleOptions = [
     match: 97,
     price: "980 zł/miesiąc",
     items: [
-      { name: "Granulat", img: "/src/photos/granulat.jpg", desc: "Pełnoporcjowy granulat dla koni sportowych.", dose: "Dawkowanie: 1 kg dziennie" },
-      { name: "Musli", img: "/src/photos/musli.png", desc: "Musli z dodatkiem ziół i oleju lnianego.", dose: "Dawkowanie: 2 kg dziennie" },
-      { name: "Witaminy", img: "/src/photos/witaminy.jpg", desc: "Kompleks witaminowy dla wsparcia odporności.", dose: "Dawkowanie: 1 miarka = 15 g" },
-      { name: "Elektrolity", img: "/src/photos/elektrolity.jpg", desc: "Suplement elektrolitowy na lato.", dose: "Dawkowanie: 1 miarka = 10 g" }
+      { name: "Granulat", img: "/public/Granulat.jpg", desc: "Pełnoporcjowy granulat dla koni sportowych.", dose: "Dawkowanie: 1 kg dziennie" },
+      { name: "Musli", img: "/public/Musli.png", desc: "Musli z dodatkiem ziół i oleju lnianego.", dose: "Dawkowanie: 2 kg dziennie" },
+      { name: "Witaminy", img: "/public/Witaminy.jpg", desc: "Kompleks witaminowy dla wsparcia odporności.", dose: "Dawkowanie: 1 miarka = 15 g" },
+      { name: "Elektrolity", img: "/public/Elektrolity.jpg", desc: "Suplement elektrolitowy na lato.", dose: "Dawkowanie: 1 miarka = 10 g" }
     ]
   },
   {
@@ -20,9 +20,9 @@ const sampleOptions = [
     match: 89,
     price: "600 zł/miesiąc",
     items: [
-      { name: "Musli", img: "/src/photos/musli.png", desc: "Musli z dodatkiem ziół i oleju lnianego.", dose: "Dawkowanie: 2,5 kg dziennie" },
-      { name: "Sieczka", img: "/src/photos/sieczka.jpg", desc: "Sieczka z lucerny dla lepszego trawienia.", dose: "Dawkowanie: 2 kg dziennie" },
-      { name: "Elektrolity", img: "/src/photos/elektrolity.jpg", desc: "Suplement elektrolitowy na lato.", dose: "Dawkowanie: 1 miarka = 10 g" }
+      { name: "Musli", img: "/public/Musli.png", desc: "Musli z dodatkiem ziół i oleju lnianego.", dose: "Dawkowanie: 2,5 kg dziennie" },
+      { name: "Sieczka", img: "/public/Sieczka.jpg", desc: "Sieczka z lucerny dla lepszego trawienia.", dose: "Dawkowanie: 2 kg dziennie" },
+      { name: "Elektrolity", img: "/public/Elektrolity.jpg", desc: "Suplement elektrolitowy na lato.", dose: "Dawkowanie: 1 miarka = 10 g" }
     ]
   },
   {
@@ -30,9 +30,9 @@ const sampleOptions = [
     match: 75,
     price: "220 zł/miesiąc",
     items: [
-      { name: "Owies", img: "/src/photos/owies.png", desc: "Owies płatkowany.", dose: "Dawkowanie: 2 kg dziennie" },
-      { name: "Sieczka", img: "/src/photos/sieczka.jpg", desc: "Sieczka z lucerny.", dose: "Dawkowanie: 2 kg dziennie" },
-      { name: "Witaminy", img: "/src/photos/witaminy.jpg", desc: "Podstawowy kompleks witaminowy. Dawkowanie: 1 miarka dziennie.", dose: "Dawkowanie: 1 miarka = 15 g" }
+      { name: "Owies", img: "/public/Owies.png", desc: "Owies płatkowany.", dose: "Dawkowanie: 2 kg dziennie" },
+      { name: "Sieczka", img: "/public/Sieczka.jpg", desc: "Sieczka z lucerny.", dose: "Dawkowanie: 2 kg dziennie" },
+      { name: "Witaminy", img: "/public/Witaminy.jpg", desc: "Podstawowy kompleks witaminowy. Dawkowanie: 1 miarka dziennie.", dose: "Dawkowanie: 1 miarka = 15 g" }
     ]
   }
 ];
