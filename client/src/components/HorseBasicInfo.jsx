@@ -1,10 +1,10 @@
 const workloadOptions = [
-  "Mały wysiłek (koń na pastwiskach)",
-  "Średni wysiłek (rekreacja, godzina dziennie)",
-  "Duży wysiłek (sezon startowy)",
+  "Niski wysiłek (koń na pastwisku)",
+  "Średni wysiłek (rekreacja, ok. 1 godz. dziennie)",
+  "Wysoki wysiłek (sezon startowy)",
   "Klacz źrebna",
-  "Klacz karmiąca",
-  "Źrebię",
+  "Klacz w laktacji",
+  "Źrebię (do 1 roku)",
   "Emeryt",
   "Ogier kryjący"
 ];
@@ -42,7 +42,7 @@ export default function HorseBasicInfo({ formData, setFormData }) {
         </div>
       </div>
       <div className="mt-6 bg-white shadow rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-2 text-gray-700">Użytkowanie konia</h3>
+        <h3 className="text-lg font-semibold mb-2 text-gray-700">Poziom aktywności / użytkowania konia</h3>
         <div className="space-y-2">
           {workloadOptions.map((option) => (
             <label key={option} className="flex items-center space-x-2">

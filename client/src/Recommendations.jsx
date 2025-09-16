@@ -16,7 +16,7 @@ const sampleOptions = [
     ]
   },
   {
-    title: "Również dobra opcja",
+    title: "Alternatywna opcja",
     match: 89,
     price: "600 zł/miesiąc",
     items: [
@@ -26,7 +26,7 @@ const sampleOptions = [
     ]
   },
   {
-    title: "Opcja budżetowa",
+    title: "Opcja ekonomiczna",
     match: 75,
     price: "220 zł/miesiąc",
     items: [

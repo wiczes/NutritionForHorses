@@ -5,7 +5,7 @@ export default function RecommendationHeader({ formData }) {
         Sugerowane pasze i suplementy
       </h1>
       <p className="text-gray-600 mb-4">
-        Na podstawie podanych informacji, przygotowaliśmy rekomendacje.
+        Na podstawie wprowadzonych danych przygotowaliśmy rekomendacje żywieniowe.
       </p>
       <section className="mx-auto w-full p-4 bg-blue-50 rounded-lg">
         <h2 className="font-semibold mb-">Podane informacje:</h2>

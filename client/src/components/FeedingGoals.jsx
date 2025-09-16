@@ -18,7 +18,7 @@ export default function FeedingGoals({ formData, setFormData }) {
 
   return (
     <div className="bg-white shadow rounded-lg p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">Co chcesz osiągnąć karmieniem?</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">Cele żywieniowe</h2>
       <div className="space-y-2">
         {goals.map((goal) => (
           <label key={goal} className="flex items-center space-x-2">
