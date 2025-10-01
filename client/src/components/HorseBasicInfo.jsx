@@ -6,7 +6,8 @@ const workloadOptions = [
   "Klacz w laktacji",
   "Źrebię (do 1 roku)",
   "Emeryt",
-  "Ogier kryjący"
+  "Ogier kryjący",
+  "Koń kontuzjowany"
 ];
 
 export default function HorseBasicInfo({ formData, setFormData }) {

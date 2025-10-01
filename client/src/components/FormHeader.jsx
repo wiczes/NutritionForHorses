@@ -5,7 +5,7 @@ export default function FormHeader() {
         Kalkulator diety dla koni
       </h1>
       <p className="text-lg text-gray-600">
-        Wypełnij formularz, aby uzyskać rekomendacje.
+        Wypełnij formularz, aby otrzymać spersonalizowane rekomendacje żywieniowe.
       </p>
     </header>
   );

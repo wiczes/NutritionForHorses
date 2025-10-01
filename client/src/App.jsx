@@ -5,6 +5,7 @@ import Allergies from "./components/Allergies";
 import FeedingGoals from "./components/FeedingGoals";
 import PastureAccess from "./components/PastureAccess";
 import SubmitButton from "./components/SubmitButton";
+import Supplements from "./components/SupplementInfo";
 
 function App() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ function App() {
     weight: "",
     workload: "",
     allergies: [],
+    supplements: [],
     goals: [],
     pasture: ""
   });
@@ -22,6 +24,7 @@ function App() {
         <FormHeader />
         <HorseBasicInfo formData={formData} setFormData={setFormData} />
         <Allergies formData={formData} setFormData={setFormData} />
+        <Supplements formData={formData} setFormData={setFormData} />
         <FeedingGoals formData={formData} setFormData={setFormData} />
         <PastureAccess formData={formData} setFormData={setFormData} />
         <SubmitButton formData={formData} />
