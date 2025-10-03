@@ -1,6 +1,8 @@
 const categories = {
-  "Problemy": ["wrzody", "słabe kopyta", "słaby stan sierści", "problemy ze stawami", "problemy z brzuchem inne niz wrzody", "odpiaszczanie"],
-  "Zawody": ["stres na zawodach", "nadmierne pobudzenie na zawodach", "wzmożony strach na zawodach"]
+  "Zdrowie wewnętrzne": ["słaba wątroba", "słabe stawy i ścięgna", "wzmocnienie zdrowych ścięgien", "regeneracja mięśni", "słaba odporność", "problemy oddechowe"],
+  "Brzuch": ["słabe jelita", "wrzody", "słaby żołądek", "odpiaszczanie"],
+  "Zdrowie zewnętrzne": ["słabe kopyta", "słaby stan sierści"],
+  "Psychika": ["koń nerwowy", "klacz nerwowa (w rui)", "wzmożony strach lub stres"]
 };
 
 export default function Supplements({ formData, setFormData }) {
