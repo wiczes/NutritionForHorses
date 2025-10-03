@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import RecommendationHeader from "./components/RecommendationHeader";
 import RecommendationCard from "./components/RecommendationCard";
 import ActionButtons from "./components/ActionButtons";
+import FeedsList from "./components/FeedsList";
 
 const sampleOptions = [
   {
@@ -53,6 +54,7 @@ export default function Recommendations() {
           <RecommendationCard key={idx} {...option} />
         ))}
       </div>
+      <FeedsList />
       <ActionButtons />
     </main>
   );
