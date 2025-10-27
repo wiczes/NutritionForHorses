@@ -15,6 +15,9 @@ app.use(cors({
 const feedsRouter = require('./routes/pasze');
 app.use('/api/pasze', feedsRouter);
 
+const recommendationsRouter = require('./routes/recommendations');
+app.use('/api/recommendations', recommendationsRouter);
+
 // Middleware configuration
 app.use(express.json()); // parse JSON request bodies
 app.use(cors());         // fontend requests

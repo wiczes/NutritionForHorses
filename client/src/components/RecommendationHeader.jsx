@@ -13,6 +13,7 @@ export default function RecommendationHeader({ formData }) {
           <li>Wiek: {formData.age} lat</li>
           <li>Waga: {formData.weight} kg</li>
           <li>Alergie: {formData.allergies.length > 0 ? formData.allergies.join(", ") : "Brak"}</li>
+          <li>Suplementy: {formData.supplements.lenght > 0 ? formData.supplements.join(", ") : "Brak"}</li>
           <li>Użytkowanie: {formData.workload}</li>
         <li>Cele żywieniowe: {formData.goals.length > 0 ? formData.goals.join(", ") : "Brak"}</li>
           <li>Pastwisko: {formData.pasture}</li>

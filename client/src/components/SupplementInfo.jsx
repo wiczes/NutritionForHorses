@@ -1,7 +1,7 @@
 const categories = {
   "Zdrowie wewnętrzne": ["słaba wątroba", "słabe stawy i ścięgna", "wzmocnienie zdrowych ścięgien", "regeneracja mięśni", "słaba odporność", "problemy oddechowe"],
   "Brzuch": ["słabe jelita", "wrzody", "słaby żołądek", "odpiaszczanie"],
-  "Zdrowie zewnętrzne": ["słabe kopyta", "słaby stan sierści"],
+  "Zdrowie zewnętrzne": ["słabe kopyta", "słaby stan sierści", "puchnące nogi"],
   "Psychika": ["koń nerwowy", "klacz nerwowa (w rui)", "wzmożony strach lub stres"]
 };
 
@@ -26,7 +26,7 @@ export default function Supplements({ formData, setFormData }) {
                 <label key={item} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    checked={formData.allergies.includes(item)}
+                    checked={formData.supplements.includes(item)}
                     onChange={() => handleChange(item)}
                     className="rounded border-gray-300"
                   />
