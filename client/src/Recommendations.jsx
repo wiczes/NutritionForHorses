@@ -71,7 +71,6 @@ export default function Recommendations() {
               {
                 name: option.nazwa,
                 img: option.zdjecie,
-                desc: option.opis,
                 dose: option.dawkowanie ? `Dawkowanie: ${option.dawkowanie.join(", ")} kg` : ""
               }
             ]}

@@ -10,7 +10,7 @@ client = MongoClient("key")
 db = client['DietaDlaKoni']
 collection = db['Pasze']
 
-alergeny_options = ["gluten", "pszenica", "orkisz", "soja", "lucerna", "strączkowe", "owies", "rzepak", "slonecznik", "kukurydza", "jeczmien"]
+alergeny_options = ["gluten", "pszenica", "orkisz", "soja", "lucerna", "groch", "owies", "rzepak", "slonecznik", "kukurydza", "jeczmien", "len", "zyto", "marchew", "jablko", "wyslodki"]
 zalecenia_options = ["wrzody", "slabybrzuch", "slabejelita", "kwasowosc", "odpornosc", "niejadki", "niskoskrobiowa", "niskocukrowa", "niskobialkowa", "redukcja", "utrzymanie", "nabraniewagi", "slabasiersc", "slabezeby", "zrebie", "mlode", "senior", "sport", "wyczynowy", "szybkaenergia", "zrownowazonaenergia", "budowamiesni", "nadpobudliwosc", "ospalosc"]
 typ_options = ["musli", "granulat", "sieczka", "mesz", "suplement"]
 kalkulowac_dawke_options = ["tak", "nie"]
@@ -19,7 +19,6 @@ jednostka_wagi_options = ["kg", "g"]
 nazwa = questionary.text("Nazwa:").ask()
 cena = int(questionary.text("Cena:").ask())
 waga = int(questionary.text("Waga:").ask())
-opis = questionary.text("Opis:").ask()
 zdjecie = questionary.text("Zdjęcie (URL):").ask()
 
 alergeny = questionary.checkbox("Alergeny:", choices=alergeny_options).ask()
@@ -37,7 +36,6 @@ doc = {
     "cena": cena,
     "waga": waga,
     "jednostka_wagi": jednostka_wagi,
-    "opis": opis,
     "zalecenia": zalecenia,
     "dawkowanie": dawkowanie,
     "kalkulowac_dawke": kalkulowac_dawke,

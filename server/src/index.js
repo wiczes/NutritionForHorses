@@ -9,6 +9,7 @@ const cors = require('cors');
 // Initialize Express app
 const app = express();
 
+app.use(express.json()); // parse JSON request bodies
 app.use(cors({
   origin: 'http://localhost:5173'
 }));
@@ -17,10 +18,6 @@ app.use('/api/pasze', feedsRouter);
 
 const recommendationsRouter = require('./routes/recommendations');
 app.use('/api/recommendations', recommendationsRouter);
-
-// Middleware configuration
-app.use(express.json()); // parse JSON request bodies
-app.use(cors());         // fontend requests
 
 // Test endpoint
 app.get('/api/hello', (req, res) => {

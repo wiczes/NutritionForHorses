@@ -15,7 +15,6 @@ export default function RecommendationCard({ title, match, price, items }) {
             className="w-32 h-32 object-cover rounded-lg shadow mb-2 border transition hover:scale-160"
             />
             <div className="font-semibold">{item.name}</div>
-            <div className="text-sm text-gray-500">{item.desc}</div>
             <div className="text-xs text-gray-400">{item.dose}</div>
           </li>
         ))}

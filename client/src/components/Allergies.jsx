@@ -1,9 +1,8 @@
 const categories = {
-  "Zboża": ["pszenica", "jęczmień", "owies", "żyto", "kukurydza"],
-  "Składniki paszy": ["otręby", "wysłodki buraczane", "melasa", "karob"],
-  "Rośliny bobowate": ["lucerna", "koniczyna"],
-  "Inne rośliny": ["gryka", "cykoria", "burak cukrowy"],
-  "Suplementy": ["białko w suplementach"]
+  "Zboża": ["pszenica", "jęczmień", "owies", "żyto", "orkisz", "rzepak"],
+  "Rośliny": ["kukurydza", "słonecznik", "len", "wysłodki buraczane", "soja", "groch", "lucerna"],
+  "Owoce i warzywa": ["jabłko", "marchew"],
+  "Suplementy i inne": ["białko w suplementach", "gluten"]
 };
 
 export default function Allergies({ formData, setFormData }) {
