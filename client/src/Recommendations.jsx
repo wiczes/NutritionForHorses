@@ -25,10 +25,12 @@ export default function Recommendations() {
         return res.json();
       })
       .then(data => {
+        console.log('Otrzymane rekomendacje:', data);
         setRecommendations(data);
         setLoading(false);
       })
       .catch(err => {
+        console.error('Błąd:', err);
         setError(err.message);
         setLoading(false);
       });
@@ -37,25 +39,24 @@ export default function Recommendations() {
   if (!formData) {
     return <p className="text-center mt-10">Brak danych. Wypełnij najpierw konfigurator.</p>;
   }
-
   if (loading) return <p className="text-center mt-10">Ładowanie rekomendacji...</p>;
   if (error) return <p className="text-center mt-10">Błąd: {error}</p>;
   if (!recommendations) return null;
 
   const options = [
-    recommendations.najlepsza && {
+    {
       title: "Największa zgodność",
       ...recommendations.najlepsza
     },
-    recommendations.alternatywa && {
+    {
       title: "Alternatywna opcja",
       ...recommendations.alternatywa
     },
-    recommendations.ekonomiczna && {
+    {
       title: "Opcja ekonomiczna",
       ...recommendations.ekonomiczna
     }
-  ].filter(Boolean);
+  ];
 
   return (
     <main className="p-6 bg-gradient-to-br from-blue-300 to-white animate-fadeIn">
@@ -65,15 +66,13 @@ export default function Recommendations() {
           <RecommendationCard
             key={idx}
             title={option.title}
-            match={option.score ? option.score * 10 : 100}
-            price={option.cena ? `${option.cena} zł` : ""}
-            items={[
-              {
-                name: option.nazwa,
-                img: option.zdjecie,
-                dose: option.dawkowanie ? `Dawkowanie: ${option.dawkowanie.join(", ")} kg` : ""
-              }
-            ]}
+            match={option.score || 0}
+            price={`${option.cena || 0} zł (${option.kosztMiesieczny || 0} zł/mies.)`}
+            items={(option.items || []).map(item => ({
+              name: item.nazwa,
+              img: item.zdjecie,
+              dose: item.dawkowanie ? `Dawkowanie: ${item.dawkowanie.join(", ")} g` : ""
+            }))}
           />
         ))}
       </div>
