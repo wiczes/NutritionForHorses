@@ -1,7 +1,7 @@
 const categories = {
   "Zdrowie wewnętrzne": ["słaba wątroba", "słabe stawy i ścięgna", "wzmocnienie zdrowych ścięgien", "regeneracja mięśni", "słaba odporność", "problemy oddechowe"],
   "Brzuch": ["słabe jelita", "wrzody", "słaby żołądek", "odpiaszczanie"],
-  "Zdrowie zewnętrzne": ["słabe kopyta", "słaby stan sierści", "puchnące nogi"],
+  "Zdrowie zewnętrzne": ["słabe kopyta", "słaby stan sierści"],
   "Psychika": ["koń nerwowy", "klacz nerwowa (w rui)", "wzmożony strach lub stres"]
 };
 

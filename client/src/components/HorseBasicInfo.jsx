@@ -1,7 +1,8 @@
 const workloadOptions = [
   "Niski wysiłek (koń na pastwisku)",
   "Średni wysiłek (rekreacja, ok. 1 godz. dziennie)",
-  "Wysoki wysiłek (sezon startowy)",
+  "Średni wysiłek (mały sport)",
+  "Wysoki wysiłek (sport wyczynowy)",
   "Klacz źrebna",
   "Klacz w laktacji",
   "Źrebię (do 1 roku)",
