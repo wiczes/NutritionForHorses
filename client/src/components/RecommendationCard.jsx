@@ -3,7 +3,7 @@ export default function RecommendationCard({ title, match, price, items }) {
     <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 border border-blue-100">
       <h2 className="text-xl font-bold text-blue-700 mb-2 text-center">{title}</h2>
       <div className="flex items-center justify-center mb-2">
-        <span className="text-green-600 font-semibold text-lg">{match}% zgodności</span>
+        <span className="text-blue-400 font-semibold text-lg">{match}% zgodności</span>
       </div>
       <div className="text-center mb-4 text-gray-700">{price}</div>
       <ul className="space-y-4">

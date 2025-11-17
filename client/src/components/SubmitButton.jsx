@@ -20,7 +20,7 @@ export default function SubmitButton({ formData }) {
     <div className="mt-6">
       <button
         onClick={handleSubmit}
-        className="w-full py-3 px-4 rounded-xl bg-blue-600 text-white font-semibold text-lg shadow hover:bg-blue-700 transition transform hover:scale-[1.02]"
+        className="w-full py-3 px-4 rounded-xl bg-purple-400 text-white font-semibold text-lg shadow hover:bg-purple-500 transition transform hover:scale-[1.02]"
       >
         Wyślij
       </button>

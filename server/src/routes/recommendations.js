@@ -68,6 +68,66 @@ const supplementsMapping = {
   'wzmożony strach lub stres': ['nadpobudliwosc'],
 };
 
+// Calculate cost
+function calculateMonthlyCost(pasza, sieczka, mesz, suplement, horseWeight) {
+    horseWeight = horseWeight || 500;
+    const weightFactor = horseWeight / 100.0;
+
+    let dailyFeedAmount = 0;
+    let dailyRoughageAmount = 0;
+    let dailyMashAmount = 0;
+    let dailySupplementAmount = 0;
+
+    const getDailyDoseInKG = (product, defaultMultiplier) => {
+        if (!product) return 0;
+
+        if (product.dawkowanie && Array.isArray(product.dawkowanie) && product.dawkowanie.length > 0 && typeof product.dawkowanie[0] === 'number') {
+            const avgDoseInGramsPer100kg = product.dawkowanie.reduce((a, b) => a + b, 0) / product.dawkowanie.length;
+            
+            const totalDailyGrams = avgDoseInGramsPer100kg * weightFactor;
+            
+            return totalDailyGrams / 1000.0;
+        }
+        
+        if (defaultMultiplier) {
+             return horseWeight * defaultMultiplier;
+        }
+
+        return 0;
+    };
+
+    dailyFeedAmount = getDailyDoseInKG(pasza, 0.005);
+    dailyRoughageAmount = getDailyDoseInKG(sieczka, 0.01);
+    dailyMashAmount = getDailyDoseInKG(mesz, 0.002);
+    dailySupplementAmount = getDailyDoseInKG(suplement, 0.0001);
+
+    // Monthly amount in kg
+    const monthlyFeedAmount = dailyFeedAmount * 30;
+    const monthlyRoughageAmount = dailyRoughageAmount * 30;
+    const monthlyMashAmount = dailyMashAmount * 30;
+    const monthlySupplementAmount = dailySupplementAmount * 30;
+
+    // Price per kg
+    const feedPricePerKg = pasza ? (pasza.cena / (pasza.waga || 1)) : 0;
+    const roughagePricePerKg = sieczka ? (sieczka.cena / (sieczka.waga || 1)) : 0;
+    const mashPricePerKg = mesz ? (mesz.cena / (mesz.waga || 1)) : 0;
+    const supplementPricePerKg = suplement ? (suplement.cena / (suplement.waga || 1)) : 0;
+
+    // Monthly cost
+    const monthlyCostFeed = monthlyFeedAmount * feedPricePerKg;
+    const monthlyCostRoughage = monthlyRoughageAmount * roughagePricePerKg;
+    const monthlyCostMash = monthlyMashAmount * mashPricePerKg;
+    const monthlyCostSupplement = monthlySupplementAmount * supplementPricePerKg;
+
+    return {
+        dailyFeed: dailyFeedAmount.toFixed(2),
+        dailyRoughage: dailyRoughageAmount.toFixed(2),
+        dailyMash : dailyMashAmount.toFixed(2),
+        dailySupplement : dailySupplementAmount.toFixed(3),
+        monthlyCost: Math.round(monthlyCostFeed + monthlyCostRoughage + monthlyCostMash + monthlyCostSupplement)
+    };
+}
+
 router.post('/', async (req, res) => {
   try {
     console.log('REQ.BODY:', req.body);
@@ -208,126 +268,63 @@ router.post('/', async (req, res) => {
 
     console.log(`Posortowano: ${pasze.length} pasz, ${sieczki.length} sieczek, ${mesze.length} meszy, ${suplementy.length} suplementów`);
 
-    const needsLucerne = pasture === "koń nie ma dostępu do trawiastego pastwiska" ||
-                         pasture === "1-3 godziny dziennie" ||
-                         wantWeightGain;
-
     // Selecting recommendations
+    // best choice
     const najlepszaPasza = pasze[0] || null;
     const najlepszaSieczka = sieczki[0] || null;
     const najlepszyMesz = mesze[0] || null;
     const najlepszySuplement = suplementy[0] || null;
 
-    const alternatywaPasza = pasze.find((p, idx) => idx > 0 && p.score >= (najlepszaPasza?.score || 0) * 0.8) || pasze[1] || pasze[0] || null;
-    const alternatywaSieczka = sieczki.find((s, idx) => s !== najlepszaSieczka && s.score >= (najlepszaSieczka?.score || 0) * 0.8) || sieczki[1] || sieczki[0] || null;
-    const alternatywaMesz = mesze.find((m, idx) => m !== najlepszyMesz && m.score >= (najlepszyMesz?.score || 0) * 0.8) || mesze[1] || mesze[0] || null;
-    const alternatywaSuplement = suplementy.find((s, idx) => s !== najlepszySuplement && s.score >= (najlepszySuplement?.score || 0) * 0.8) || suplementy[1] || suplementy[0] || null;
+    // second best choice
+    const alternatywaPasza = pasze[1] || najlepszaPasza;
+    const alternatywaSieczka = sieczki[1] || najlepszaSieczka;
+    const alternatywaMesz = mesze[1] || najlepszyMesz;
+    const alternatywaSuplement = suplementy[1] || najlepszySuplement;
 
-    const minScoreThreshold = (najlepszaPasza?.score || 0) * 0.6;
+    // cheaper choice
+    const findEkonomiczny = (list, best, alt, minScore) => {
+      const uzyteNazwy = new Set([best?.nazwa, alt?.nazwa].filter(Boolean));
+      
+
+      const kandydaci = list.filter(p => p.score >= minScore && !uzyteNazwy.has(p.nazwa));
+      
+      // 3. choosing the cheapest
+      const ekonomiczny = kandydaci.reduce((min, f) => {
+          if (!min) return f;
+          const minPrice = (min.cena || Infinity) / (min.waga || 1);
+          const fPrice = (f.cena || Infinity) / (f.waga || 1);
+          return fPrice < minPrice ? f : min;
+      }, null);
+
+      // choices and fallback
+      if (ekonomiczny) return ekonomiczny;
+      if (list[2]) return list[2];
+      if (alt) return alt;
+  
+      return best;
+    };
+
+    const minScorePasza = (najlepszaPasza?.score || 0) * 0.6;
+    const ekonomicznaPasza = findEkonomiczny(pasze, najlepszaPasza, alternatywaPasza, minScorePasza);
+
+    const minScoreSieczka = (najlepszaSieczka?.score || 0) * 0.6;
+    const ekonomicznaSieczka = findEkonomiczny(sieczki, najlepszaSieczka, alternatywaSieczka, minScoreSieczka);
+
+    const minScoreMesz = (najlepszyMesz?.score || 0) * 0.6;
+    const ekonomicznyMesz = findEkonomiczny(mesze, najlepszyMesz, alternatywaMesz, minScoreMesz);
     
-    const ekonomicznaPasza = pasze
-      .filter(p => p.score >= minScoreThreshold)
-      .reduce((min, f) => {
-        if (!min) return f;
-        const minPrice = (min.cena || Infinity) / (min.waga || 1);
-        const fPrice = (f.cena || Infinity) / (f.waga || 1);
-        return fPrice < minPrice ? f : min;
-      }, null) || pasze[0];
+    const minScoreSuplement = (najlepszySuplement?.score || 0) * 0.6;
+    const ekonomicznySuplement = findEkonomiczny(suplementy, najlepszySuplement, alternatywaSuplement, minScoreSuplement);
 
-    const ekonomicznaSieczka = sieczki
-      .filter(s => s.score >= minScoreThreshold)
-      .reduce((min, f) => {
-        if (!min) return f;
-        const minPrice = (min.cena || Infinity) / (min.waga || 1);
-        const fPrice = (f.cena || Infinity) / (f.waga || 1);
-        return fPrice < minPrice ? f : min;
-      }, null) || sieczki[0];
-
-    const ekonomicznyMesz = mesze
-      .filter(m => m.score >= minScoreThreshold)
-      .reduce((min, f) => {
-        if (!min) return f;
-        const minPrice = (min.cena || Infinity) / (min.waga || 1);
-        const fPrice = (f.cena || Infinity) / (f.waga || 1);
-        return fPrice < minPrice ? f : min;
-      }, null) || mesze[0];
-
-    const ekonomicznySuplement = suplementy
-      .filter(s => s.score >= minScoreThreshold)
-      .reduce((min, f) => {
-        if (!min) return f;
-        const minPrice = (min.cena || Infinity) / (min.waga || 1);
-        const fPrice = (f.cena || Infinity) / (f.waga || 1);
-        return fPrice < minPrice ? f : min;
-      }, null) || suplementy[0];
-
-    // Calculating monthly costs
-    function calculateMonthlyCost(pasza, sieczka, mesz, suplement, horseWeight) {
-      let dailyFeedAmount = 0;
-      let dailyRoughageAmount = 0;
-      let dailyMashAmount = 0;
-      let dailySupplementAmount = 0;
-
-      if (pasza && pasza.dawkowanie && Array.isArray(pasza.dawkowanie) && pasza.dawkowanie.length > 0) {
-        const avgDose = pasza.dawkowanie.reduce((a, b) => a + b, 0) / pasza.dawkowanie.length;
-        dailyFeedAmount = avgDose;
-      } else {
-        dailyFeedAmount = horseWeight * 0.005;
-      }
-
-      if (sieczka && sieczka.dawkowanie && Array.isArray(sieczka.dawkowanie) && sieczka.dawkowanie.length > 0) {
-        const avgDose = sieczka.dawkowanie.reduce((a, b) => a + b, 0) / sieczka.dawkowanie.length;
-        dailyRoughageAmount = avgDose;
-      } else {
-        dailyRoughageAmount = horseWeight * 0.01;
-      }
-
-      if(mesz && mesz.dawkowanie && Array.isArray(mesz.dawkowanie) && mesz.dawkowanie.length > 0) {
-        const avgDose = mesz.dawkowanie.reduce((a, b) => a + b, 0) / mesz.dawkowanie.length;
-        dailyFeedAmount += avgDose;
-      } else {
-        dailyMashAmount = horseWeight * 0.002;
-      }
-
-      if(suplement && suplement.dawkowanie && Array.isArray(suplement.dawkowanie) && suplement.dawkowanie.length > 0) {
-        const avgDose = suplement.dawkowanie.reduce((a, b) => a + b, 0) / suplement.dawkowanie.length;
-        dailyFeedAmount += avgDose;
-      } else {
-        dailySupplementAmount = horseWeight * 0.001;
-      }
-
-      const monthlyFeedAmount = dailyFeedAmount * 30;
-      const monthlyRoughageAmount = dailyRoughageAmount * 30;
-      const monthlyMashAmount = dailyMashAmount * 30;
-      const monthlySupplementAmount = dailySupplementAmount * 30;
-
-      const feedPricePerKg = pasza ? (pasza.cena / pasza.waga) : 0;
-      const roughagePricePerKg = sieczka ? (sieczka.cena / sieczka.waga) : 0;
-      const mashPricePerKg = mesz ? (mesz.cena / mesz.waga) : 0;
-      const supplementPricePerKg = suplement ? (suplement.cena / suplement.waga) : 0;
-
-      const monthlyCostFeed = monthlyFeedAmount * feedPricePerKg / 1000;
-      const monthlyCostRoughage = monthlyRoughageAmount * roughagePricePerKg / 1000;
-      const monthlyCostMash = mesz ? (monthlyMashAmount * mashPricePerKg / 1000) : 0;
-      const monthlyCostSupplement = suplement ? (monthlySupplementAmount * supplementPricePerKg / 1000) : 0;
-
-      return {
-        dailyFeed: dailyFeedAmount.toFixed(1),
-        dailyRoughage: dailyRoughageAmount.toFixed(1),
-        dailyMash : dailyMashAmount.toFixed(1),
-        dailySupplement : dailySupplementAmount.toFixed(1),
-        monthlyCost: Math.round(monthlyCostFeed + monthlyCostRoughage + monthlyCostMash + monthlyCostSupplement)
-      };
-    }
-
+    // Calculate monthly cost
     const najlepszaCost = calculateMonthlyCost(najlepszaPasza, najlepszaSieczka, najlepszyMesz, najlepszySuplement, weight || 500);
-    const alternatywaCost = calculateMonthlyCost(alternatywaPasza, alternatywaSieczka, najlepszyMesz, najlepszySuplement, weight || 500);
-    const ekonomicznaCost = calculateMonthlyCost(ekonomicznaPasza, ekonomicznaSieczka, najlepszyMesz, najlepszySuplement, weight || 500);
+    const alternatywaCost = calculateMonthlyCost(alternatywaPasza, alternatywaSieczka, alternatywaMesz, alternatywaSuplement, weight || 500);
+    const ekonomicznaCost = calculateMonthlyCost(ekonomicznaPasza, ekonomicznaSieczka, ekonomicznyMesz, ekonomicznySuplement, weight || 500);
 
     // Creating response objects
     const createRecommendation = (pasza, sieczka, mesz, suplement, cost) => ({
-      score: Math.round(((pasza?.score || 0) + (sieczka?.score || 0) + (mesz?.score || 0) + (suplement.score || 0)) / 4),
-      cena: ((pasza?.cena || 0) + (sieczka?.cena || 0) + (mesz?.score || 0) + (suplement.score || 0)),
+      score: Math.round(((pasza?.score || 0) + (sieczka?.score || 0) + (mesz?.score || 0) + (suplement?.score || 0)) / 4), // Zmieniono suplement.score
+      cena: ((pasza?.cena || 0) + (sieczka?.cena || 0) + (mesz?.cena || 0) + (suplement?.cena || 0)), // Zmieniono mesz.score i suplement.score na .cena
       kosztMiesieczny: cost.monthlyCost,
       dzienneDawkowanie: {
         pasza: cost.dailyFeed,
@@ -374,8 +371,8 @@ router.post('/', async (req, res) => {
 
     res.json({
       najlepsza: createRecommendation(najlepszaPasza, najlepszaSieczka, najlepszyMesz, najlepszySuplement, najlepszaCost),
-      alternatywa: createRecommendation(alternatywaPasza, alternatywaSieczka, najlepszyMesz, najlepszySuplement, alternatywaCost),
-      ekonomiczna: createRecommendation(ekonomicznaPasza, ekonomicznaSieczka, najlepszyMesz, najlepszySuplement, ekonomicznaCost)
+      alternatywa: createRecommendation(alternatywaPasza, alternatywaSieczka, alternatywaMesz, alternatywaSuplement, alternatywaCost),
+      ekonomiczna: createRecommendation(ekonomicznaPasza, ekonomicznaSieczka, ekonomicznyMesz, ekonomicznySuplement, ekonomicznaCost)
     });
 
   } catch (error) {

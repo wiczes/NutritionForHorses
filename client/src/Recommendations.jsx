@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import RecommendationHeader from "./components/RecommendationHeader";
 import RecommendationCard from "./components/RecommendationCard";
 import ActionButtons from "./components/ActionButtons";
-import FeedsList from "./components/FeedsList";
+// import FeedsList from "./components/FeedsList";
 
 export default function Recommendations() {
   const location = useLocation();
@@ -36,12 +36,16 @@ export default function Recommendations() {
       });
   }, [formData]);
 
-  if (!formData) {
-    return <p className="text-center mt-10">Brak danych. Wypełnij najpierw konfigurator.</p>;
-  }
-  if (loading) return <p className="text-center mt-10">Ładowanie rekomendacji...</p>;
-  if (error) return <p className="text-center mt-10">Błąd: {error}</p>;
-  if (!recommendations) return null;
+  const renderContent = () => {
+    if (loading) {
+      return <div className="text-center text-xl font-semibold text-indigo-900">Ładowanie rekomendacji...</div>;
+    }
+    if (error) {
+      return <div className="text-center text-xl font-semibold text-red-600">Błąd: {error}</div>;
+    }
+    if (!recommendations) {
+      return <div className="text-center text-xl font-semibold text-gray-600">Brak danych do wyświetlenia.</div>;
+    }
 
   const options = [
     {
@@ -59,7 +63,7 @@ export default function Recommendations() {
   ];
 
   return (
-    <main className="p-6 bg-gradient-to-br from-blue-300 to-white animate-fadeIn">
+    <main className="w-full max-w-7xl bg-white/70 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-10 border border-white/50">
       <RecommendationHeader formData={formData} />
       <div className="flex flex-col md:flex-row gap-6 justify-center mb-8">
         {options.map((option, idx) => (
@@ -71,13 +75,19 @@ export default function Recommendations() {
             items={(option.items || []).map(item => ({
               name: item.nazwa,
               img: item.zdjecie,
-              dose: item.dawkowanie ? `Dawkowanie: ${item.dawkowanie.join(", ")} g` : ""
+              dose: item.dawkowanie ? `Dawkowanie: ${item.dawkowanie.join(" - ")} g dziennie` : ""
             }))}
           />
         ))}
       </div>
-      <FeedsList />
+      {/* <FeedsList /> */}
       <ActionButtons />
+    </main>
+  );
+  };
+    return (
+    <main className="min-h-screen p-4 md:p-12 flex items-center justify-center animated-gradient">
+      {renderContent()}
     </main>
   );
 }

@@ -16,6 +16,22 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg, #da90e2, #6fc0e0, #dd9ede, #5b76b6);
+  background-size: 400% 400%;
+  animation: gradient-animation 10s ease infinite;
+}
+
 .animate-fadeIn {
   animation: fadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="range"] {
+  @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600;
 }
