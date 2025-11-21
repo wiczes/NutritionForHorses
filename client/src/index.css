@@ -35,3 +35,31 @@ body {
 input[type="range"] {
   @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600;
 }
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0vh) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.3; 
+  }
+  90% {
+    opacity: 0.3; 
+  }
+  100% {
+    transform: translateY(-300vh) rotate(20deg) scale(1.8);
+    opacity: 0;
+  }
+}
+
+.horse-float {
+  position: absolute;
+  top: 105%;
+  mix-blend-mode: multiply; 
+  animation-name: floatUp;
+  animation-timing-function: linear; 
+  animation-iteration-count: infinite;
+  pointer-events: none;
+  z-index: 0;
+}

@@ -6,6 +6,7 @@ import FeedingGoals from "./components/FeedingGoals";
 import PastureAccess from "./components/PastureAccess";
 import SubmitButton from "./components/SubmitButton";
 import Supplements from "./components/SupplementInfo";
+import BackgroundHorses from "./components/BackgroundHorses"; 
 
 function App() {
   const [formData, setFormData] = useState({
@@ -24,8 +25,11 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen p-4 md:p-12 flex items-center justify-center animated-gradient">
-      <div className="w-full max-w-3xl bg-white/70 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-10 border border-white/50">
+    <div className="min-h-screen p-4 md:p-12 flex items-center justify-center animated-gradient relative overflow-hidden">
+      
+      <BackgroundHorses />
+
+      <div className="w-full max-w-3xl bg-white/70 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-10 border border-white/50 z-10 relative">
         <div {...getAnimationProps(0)}>
           <FormHeader />
         </div>
