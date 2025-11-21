@@ -11,7 +11,7 @@ db = client['DietaDlaKoni']
 collection = db['Pasze']
 
 alergeny_options = ["gluten", "pszenica", "orkisz", "soja", "lucerna", "groch", "owies", "rzepak", "slonecznik", "kukurydza", "jeczmien", "len", "zyto", "marchew", "jablko", "wyslodki"]
-zalecenia_options = ["wrzody", "slabybrzuch", "slabejelita", "kwasowosc", "odpornosc", "niejadki", "niskoskrobiowa", "niskocukrowa", "niskobialkowa", "redukcja", "utrzymanie", "nabraniewagi", "slabasiersc", "slabezeby", "zrebie", "mlode", "senior", "sport", "wyczynowy", "szybkaenergia", "zrownowazonaenergia", "budowamiesni", "nadpobudliwosc", "ospalosc"]
+zalecenia_options = ["wrzody", "slabybrzuch", "slabejelita", "slabekopyta", "slabawatroba", "kwasowosc", "odpornosc", "niejadki", "niskoskrobiowa", "niskocukrowa", "niskobialkowa", "redukcja", "utrzymanie", "nabraniewagi", "slabasiersc", "slabezeby", "slabesciagnaistawy", "wspomaganiestawow", "nerwowe", "plochliwe", "oddechowe", "zrebie", "mlode", "senior", "ciaza", "laktacja", "ogierkryjacy", "sport", "wyczynowy", "szybkaenergia", "zrownowazonaenergia", "budowamiesni", "regeneracjamiesni", "nadpobudliwosc", "ospalosc", "odpiaszczanie", "ruja", "kontuzjowany", "slabekosci", "elektrolit", "owady"]
 typ_options = ["musli", "granulat", "sieczka", "mesz", "suplement"]
 kalkulowac_dawke_options = ["tak", "nie"]
 jednostka_wagi_options = ["kg", "g"]
