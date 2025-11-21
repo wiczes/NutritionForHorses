@@ -14,24 +14,18 @@ function normalize(str) {
 const aliasRaw = {
   'pszenica': 'pszenica',
   'jęczmień': 'jeczmien',
-  'jeczmien': 'jeczmien',
   'owies': 'owies',
   'żyto': 'zyto',
-  'zyto': 'zyto',
   'kukurydza': 'kukurydza',
   'orkisz': 'orkisz',
   'rzepak': 'rzepak',
-  'slonecznik': 'slonecznik',
   'słonecznik': 'slonecznik',
   'len': 'len',
-  'wyslodki buraczane': 'wyslodki',
   'wysłodki buraczane': 'wyslodki',
-  'wyslodki': 'wyslodki',
   'soja': 'soja',
   'groch': 'groch',
   'lucerna': 'lucerna',
   'gluten': 'gluten',
-  'jablko': 'jablko',
   'jabłko': 'jablko',
   'marchew': 'marchew',
 };
@@ -51,69 +45,81 @@ const goalsMapping = {
 };
 
 const supplementsMapping = {
-  'słaba wątroba': ['slabawatroba'],
-  'słabe stawy i ścięgna': ['sslabesciegnaistawy'],
+  'wzmocnienie wątroby': ['slabawatroba'],
+  'słabe lub kontuzjowane ścięgna i stawy': ['slabesciegnaistawy'],
   'wzmocnienie zdrowych ścięgien': ['sport', 'wyczynowy'],
   'regeneracja mięśni': ['regeneracjamiesni'],
-  'słaba odporność': ['odpornosc'],
+  'wzmocnienie odporności': ['odpornosc'],
   'problemy oddechowe': ['oddechowe'],
-  'słabe jelita': ['slabejelita'],
-  'wrzody': ['wrzody'],
-  'słaby żołądek': ['slabybrzuch'],
+  'wzmocnienie jelit': ['slabejelita'],
+  'wrzody żołądka': ['wrzody'],
+  'wzmocnienie żołądka': ['slabybrzuch'],
+  'kwasowość żołądka': ['kwasowosc'],
   'odpiaszczanie': ['odpiaszczanie'],
-  'słabe kopyta': ['slabekopyta'],
-  'słaby stan sierści': ['slabasiersc'],
+  'wzmocnienie kopyt': ['slabekopyta'],
+  'brak połysku sierści': ['slabasiersc'],
+  'wzmocnienie zębów': ['slabezeby'],
+  'odstraszenie owadów': ['owady'],
   'koń nerwowy': ['nadpobudliwosc'],
-  'klacz nerwowa (w rui)': ['ruja'],
-  'wzmożony strach lub stres': ['nadpobudliwosc'],
+  'klacz nerwowa podczas rui': ['ruja'],
+  'wzmożony strach lub stres': ['nerwowe', 'plochliwe'],
 };
 
-// Calculate cost
+const basicInfoMapping = {
+  'Niski wysiłek (koń na pastwisku)': ['utrzymanie', 'zrownowazonaenergia'],
+  'Średni wysiłek (rekreacja, ok. 1 godz. dziennie)': ['utrzymanie'],
+  'Średni wysiłek (mały sport)': ['sport', 'elektrolit'],
+  'Wysoki wysiłek (sport wyczynowy)': ['wyczynowy', 'elektrolit'],
+  'Klacz źrebna': ['ciaza'],
+  'Klacz w laktacji': ['laktacja'],
+  'Źrebię': ['zrebie'],
+  'Emeryt': ['senior'],
+  'Ogier kryjący': ['ogierkryjacy'],
+  'Koń kontuzjowany': ['kontuzjowany'],
+};
+
 function calculateMonthlyCost(pasza, sieczka, mesz, suplement, horseWeight) {
     horseWeight = horseWeight || 500;
-    const weightFactor = horseWeight / 100.0;
 
     let dailyFeedAmount = 0;
     let dailyRoughageAmount = 0;
     let dailyMashAmount = 0;
     let dailySupplementAmount = 0;
 
-    const getDailyDoseInKG = (product, defaultMultiplier) => {
-        if (!product) return 0;
-
-        if (product.dawkowanie && Array.isArray(product.dawkowanie) && product.dawkowanie.length > 0 && typeof product.dawkowanie[0] === 'number') {
-            const avgDoseInGramsPer100kg = product.dawkowanie.reduce((a, b) => a + b, 0) / product.dawkowanie.length;
-            
-            const totalDailyGrams = avgDoseInGramsPer100kg * weightFactor;
-            
-            return totalDailyGrams / 1000.0;
-        }
-        
-        if (defaultMultiplier) {
-             return horseWeight * defaultMultiplier;
+    const getDailyDoseInKG = (product) => {
+        if (!product || !product.dawkowanie || !Array.isArray(product.dawkowanie) || product.dawkowanie.length === 0) {
+            return 0;
         }
 
-        return 0;
+        const sumDose = product.dawkowanie.reduce((a, b) => a + b, 0);
+        const avgDoseInGrams = sumDose / product.dawkowanie.length;
+
+        let finalDailyGrams = 0;
+
+        if (product.kalkulowac_dawke === 'tak') {
+            finalDailyGrams = avgDoseInGrams * (horseWeight / 100.0);
+        } else {
+            finalDailyGrams = avgDoseInGrams;
+        }
+
+        return finalDailyGrams / 1000.0;
     };
 
-    dailyFeedAmount = getDailyDoseInKG(pasza, 0.005);
-    dailyRoughageAmount = getDailyDoseInKG(sieczka, 0.01);
-    dailyMashAmount = getDailyDoseInKG(mesz, 0.002);
-    dailySupplementAmount = getDailyDoseInKG(suplement, 0.0001);
+    dailyFeedAmount = getDailyDoseInKG(pasza);
+    dailyRoughageAmount = getDailyDoseInKG(sieczka);
+    dailyMashAmount = getDailyDoseInKG(mesz);
+    dailySupplementAmount = getDailyDoseInKG(suplement);
 
-    // Monthly amount in kg
     const monthlyFeedAmount = dailyFeedAmount * 30;
     const monthlyRoughageAmount = dailyRoughageAmount * 30;
     const monthlyMashAmount = dailyMashAmount * 30;
     const monthlySupplementAmount = dailySupplementAmount * 30;
 
-    // Price per kg
     const feedPricePerKg = pasza ? (pasza.cena / (pasza.waga || 1)) : 0;
     const roughagePricePerKg = sieczka ? (sieczka.cena / (sieczka.waga || 1)) : 0;
     const mashPricePerKg = mesz ? (mesz.cena / (mesz.waga || 1)) : 0;
     const supplementPricePerKg = suplement ? (suplement.cena / (suplement.waga || 1)) : 0;
 
-    // Monthly cost
     const monthlyCostFeed = monthlyFeedAmount * feedPricePerKg;
     const monthlyCostRoughage = monthlyRoughageAmount * roughagePricePerKg;
     const monthlyCostMash = monthlyMashAmount * mashPricePerKg;
@@ -122,8 +128,8 @@ function calculateMonthlyCost(pasza, sieczka, mesz, suplement, horseWeight) {
     return {
         dailyFeed: dailyFeedAmount.toFixed(2),
         dailyRoughage: dailyRoughageAmount.toFixed(2),
-        dailyMash : dailyMashAmount.toFixed(2),
-        dailySupplement : dailySupplementAmount.toFixed(3),
+        dailyMash: dailyMashAmount.toFixed(2),
+        dailySupplement: dailySupplementAmount.toFixed(3),
         monthlyCost: Math.round(monthlyCostFeed + monthlyCostRoughage + monthlyCostMash + monthlyCostSupplement)
     };
 }
@@ -136,109 +142,115 @@ router.post('/', async (req, res) => {
     const { 
       allergies = [], 
       goals = [], 
-      pasture = "", 
+      pasture = [], 
       supplements = [],
       age = 0,
       weight = 0,
-      activityLevel = ""
+      workload = []
     } = req.body || {};
 
-    // age group determination
     let ageGroup = 'dorosly';
     if (age < 3) ageGroup = 'zrebie';
     else if (age >= 20) ageGroup = 'senior';
 
-    if (activityLevel === "Emeryt") ageGroup = 'senior';
-    if (activityLevel === "Źrebię (do 1 roku)") ageGroup = 'zrebie';
+    if (workload === "Emeryt") ageGroup = 'senior';
+    if (workload === "Źrebię") ageGroup = 'zrebie';
 
-    console.log(`Wiek: ${age}, Grupa: ${ageGroup}, Aktywność: ${activityLevel}`);
+    console.log(`Wiek: ${age}, Grupa: ${ageGroup}, Aktywność: ${workload}`);
 
-    // normalization of allergies
     const incoming = (allergies || []).map(normalize);
     const canonicalAllergies = incoming.map(a => aliasMap[a] || a);
     const allergySet = new Set(canonicalAllergies);
 
-    // collecting required recommendations
-    let requiredRecommendations = new Set();
-
-    (goals || []).forEach(goal => {
-      const mapped = goalsMapping[goal];
-      if (mapped) mapped.forEach(r => requiredRecommendations.add(r));
-    });
+    let primaryReq = new Set();
+    let secondaryReq = new Set();
 
     (supplements || []).forEach(supp => {
       const mapped = supplementsMapping[supp];
-      if (mapped) mapped.forEach(r => requiredRecommendations.add(r));
+      if (mapped) {
+          mapped.forEach(r => {
+              secondaryReq.add(r);
+          });
+      }
     });
 
-    if (ageGroup === 'zrebie') requiredRecommendations.add('zrebie');
-    if (ageGroup === 'senior') requiredRecommendations.add('senior');
+    (goals || []).forEach(goal => {
+      const mapped = goalsMapping[goal];
+      if (mapped) mapped.forEach(r => primaryReq.add(r));
+    });
 
-    if (activityLevel === "Wysoki wysiłek (sport wyczynowy)") {
-      requiredRecommendations.add('wyczynowy');
-    }
-    if (activityLevel === "Średni wysiłek (rekreacja, ok. 1 godz. dziennie)") {
-      requiredRecommendations.add('zrownowazonaenergia');
-    }
-    if (activityLevel === "Średni wysiłek (mały sport)") {
-      requiredRecommendations.add('sport');
-    }
-    if (activityLevel === "Klacz źrebna" || activityLevel === "Klacz w laktacji") {
-      requiredRecommendations.add('nabraniewagi');
-    }
+    const workloadArray = Array.isArray(workload) ? workload : [workload];
 
-    console.log('Wymagane zalecenia:', Array.from(requiredRecommendations));
+    workloadArray.forEach(level => {
+      if (!level) return; 
+      const mapped = basicInfoMapping[level];
+      if (mapped) {
+          mapped.forEach(r => primaryReq.add(r));
+      }
+    });
+
+    if (ageGroup === 'zrebie') primaryReq.add('zrebie');
+    if (ageGroup === 'senior') primaryReq.add('senior');
+
+    console.log('Wymagane (Primary):', Array.from(primaryReq));
+    console.log('Dodatkowe (Secondary):', Array.from(secondaryReq));
 
     let feeds = await db.collection('Pasze').find({}).toArray();
 
-    // filtering allergens
     feeds = feeds.filter(feed => {
       const feedAllergens = (feed.alergeny || []).map(normalize);
       return !feedAllergens.some(al => allergySet.has(al));
     });
 
-    console.log(`Po filtrze alergenów: ${feeds.length} pasz`);
-
     const wantWeightGain = (goals || []).includes("nabranie tkanki tłuszczowej") || 
-                           activityLevel === "Klacz źrebna" ||
-                           activityLevel === "Klacz w laktacji";
-    
+                           workload === "Klacz źrebna" ||
+                           workload === "Klacz w laktacji";
     const wantWeightLoss = (goals || []).includes("utrata tkanki tłuszczowej");
 
     feeds = feeds.filter(feed => {
       const feedZ = (feed.zalecenia || []).map(normalize);
-      
       if (wantWeightLoss) {
-        if (feedZ.includes('nabraniewagi') || feedZ.includes('budowamiesni')) {
-          return false;
-        }
+        if (feedZ.includes('nabraniewagi') || feedZ.includes('budowamiesni')) return false;
       }
-      
       if (!wantWeightGain && !(goals || []).includes("budowa masy mięśniowej")) {
-        if (feedZ.includes('nabraniewagi') || feedZ.includes('budowamiesni')) {
-          return false;
-        }
+        if (feedZ.includes('nabraniewagi') || feedZ.includes('budowamiesni')) return false;
       }
-
       return true;
     });
 
-    console.log(`Po wykluczeniu: ${feeds.length} pasz`);
+    console.log(`Po filtrach logicznych: ${feeds.length} pasz`);
 
-    // Scoring
     feeds.forEach(feed => {
-      let matchedCount = 0;
       const feedZ = (feed.zalecenia || []).map(normalize);
       
-      requiredRecommendations.forEach(req => {
+      let primaryMatches = 0;
+      primaryReq.forEach(req => {
         if (feedZ.includes(normalize(req))) {
-          matchedCount++;
+          primaryMatches++;
         }
       });
 
-      const totalRequired = requiredRecommendations.size || 1;
-      feed.score = Math.round((matchedCount / totalRequired) * 100);
-      feed.matchedCount = matchedCount;
+      const totalPrimary = primaryReq.size;
+      
+      let baseScore = 0;
+      if (totalPrimary > 0) {
+        baseScore = (primaryMatches / totalPrimary) * 100;
+      } else {
+        baseScore = 100;
+      }
+
+      let secondaryMatches = 0;
+      secondaryReq.forEach(req => {
+        if (feedZ.includes(normalize(req))) {
+          secondaryMatches++;
+        }
+      });
+
+      const bonusPoints = secondaryMatches * 10;
+
+      feed.score = Math.round(baseScore + bonusPoints);
+      
+      feed.matchedCount = primaryMatches + secondaryMatches; 
     });
 
     const sieczki = feeds.filter(f => f.typ === "sieczka");

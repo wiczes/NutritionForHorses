@@ -5,7 +5,7 @@ const workloadOptions = [
   "Wysoki wysiłek (sport wyczynowy)",
   "Klacz źrebna",
   "Klacz w laktacji",
-  "Źrebię (do 1 roku)",
+  "Źrebię",
   "Emeryt",
   "Ogier kryjący",
   "Koń kontuzjowany"

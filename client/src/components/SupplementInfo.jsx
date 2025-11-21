@@ -1,8 +1,8 @@
 const categories = {
-  "Zdrowie wewnętrzne": ["słaba wątroba", "słabe stawy i ścięgna", "wzmocnienie zdrowych ścięgien", "regeneracja mięśni", "słaba odporność", "problemy oddechowe"],
-  "Brzuch": ["słabe jelita", "wrzody", "słaby żołądek", "odpiaszczanie"],
-  "Zdrowie zewnętrzne": ["słabe kopyta", "słaby stan sierści"],
-  "Psychika": ["koń nerwowy", "klacz nerwowa (w rui)", "wzmożony strach lub stres"]
+  "Zdrowie wewnętrzne": ["wzmocnienie wątroby", "słabe lub kontuzjowane ścięgna i stawy", "wzmocnienie zdrowych ścięgien i stawów", "regeneracja mięśni", "wzmocnienie odporności", "problemy oddechowe"],
+  "Brzuch": ["wzmocnienie jelit", "wrzody żołądka", "wzmocnienie żołądka", "kwasowość żołądka", "odpiaszczanie"],
+  "Zdrowie zewnętrzne": ["wzmocnienie kopyt", "brak połysku sierści", "wzmocnienie zębów", "odstraszenie owadów"],
+  "Psychika": ["koń nerwowy", "klacz nerwowa podczas rui", "wzmożony strach lub stres"]
 };
 
 export default function Supplements({ formData, setFormData }) {
@@ -16,7 +16,7 @@ export default function Supplements({ formData, setFormData }) {
 
   return (
     <div className="bg-white shadow rounded-lg p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">Suplementacja</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">Jakich dodatków żywieniowych poszukujesz?</h2>
       <div className="grid md:grid-cols-2 gap-6">
         {Object.entries(categories).map(([category, items]) => (
           <div key={category}>
