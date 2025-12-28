@@ -195,6 +195,33 @@ router.post('/', async (req, res) => {
       }
     });
 
+    const forceElectrolyteWorkload = [
+      'Średni wysiłek (mały sport)', 
+      'Wysoki wysiłek (sport wyczynowy)', 
+      'Klacz źrebna', 
+      'Klacz w laktacji', 
+      'Źrebię', 
+      'Emeryt', 
+      'Ogier kryjący'
+    ];
+    
+    const forceElectrolyteHealth = [
+      'wzmocnienie jelit', 
+      'wrzody żołądka', 
+      'wzmocnienie żołądka'
+    ];
+
+    const wList = Array.isArray(workload) ? workload : [workload];
+    
+    const needsElectrolytes = 
+        wList.some(w => forceElectrolyteWorkload.includes(w)) || 
+        (supplements || []).some(s => forceElectrolyteHealth.includes(s));
+
+    if (needsElectrolytes) {
+        specificSupplementTags.add('elektrolit');
+        secondaryReq.add('elektrolit'); 
+    }
+
     if (ageGroup === 'zrebie') primaryReq.add('zrebie');
     if (ageGroup === 'senior') primaryReq.add('senior');
 
@@ -226,8 +253,6 @@ router.post('/', async (req, res) => {
 
     console.log(`Po filtrach logicznych: ${feeds.length} pasz`);
 
-    
-
     feeds.forEach(feed => {
       const feedZ = (feed.zalecenia || []).map(normalize);
       
@@ -239,12 +264,14 @@ router.post('/', async (req, res) => {
       });
 
       const totalPrimary = primaryReq.size;
+      
       let baseScore = 0;
       if (totalPrimary > 0) {
-        baseScore = (primaryMatches / totalPrimary) * 100;
+        baseScore = 50 + ((primaryMatches / totalPrimary) * 50);
       } else {
         baseScore = 100;
       }
+
       let specificSuppMatches = 0;
       if (specificSupplementTags.size > 0) {
           specificSupplementTags.forEach(tag => {
@@ -262,12 +289,14 @@ router.post('/', async (req, res) => {
         }
       });
 
-      const bonusPoints = secondaryMatches * 10; 
-      
-      feed.score = Math.round(baseScore + bonusPoints);
+      const bonusPoints = secondaryMatches * 5; 
+      let calculatedScore = baseScore + bonusPoints;
+      if (calculatedScore > 100) calculatedScore = 100;
+
+      feed.score = Math.round(calculatedScore);
       feed.matchedCount = primaryMatches + secondaryMatches; 
     });
-
+    
 const sieczki = feeds.filter(f => f.typ === "sieczka");
     const pasze = feeds.filter(f => f.typ == "granulat" || f.typ == "musli");
     const mesze = feeds.filter(f => f.typ == "mesz");
