@@ -147,7 +147,6 @@ router.post('/', async (req, res) => {
     const { 
       allergies = [], 
       goals = [], 
-      pasture = [], 
       supplements = [],
       age = 0,
       weight = 0,
@@ -226,6 +225,8 @@ router.post('/', async (req, res) => {
     });
 
     console.log(`Po filtrach logicznych: ${feeds.length} pasz`);
+
+    
 
     feeds.forEach(feed => {
       const feedZ = (feed.zalecenia || []).map(normalize);

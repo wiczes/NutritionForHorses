@@ -16,7 +16,6 @@ export default function RecommendationHeader({ formData }) {
           <li>Suplementy: {formData.supplements.length > 0 ? formData.supplements.join(", ") : "Brak"}</li>
           <li>Użytkowanie: {formData.workload}</li>
         <li>Cele żywieniowe: {formData.goals.length > 0 ? formData.goals.join(", ") : "Brak"}</li>
-          <li>Pastwisko: {formData.pasture}</li>
         </ul>
       </section>
     </header>

@@ -3,7 +3,6 @@ import FormHeader from "./components/FormHeader";
 import HorseBasicInfo from "./components/HorseBasicInfo";
 import Allergies from "./components/Allergies";
 import FeedingGoals from "./components/FeedingGoals";
-import PastureAccess from "./components/PastureAccess";
 import SubmitButton from "./components/SubmitButton";
 import Supplements from "./components/SupplementInfo";
 import BackgroundHorses from "./components/BackgroundHorses"; 
@@ -16,7 +15,6 @@ function App() {
     allergies: [],
     supplements: [],
     goals: [],
-    pasture: ""
   });
 
   const getAnimationProps = (delay) => ({
@@ -46,9 +44,6 @@ function App() {
           <FeedingGoals formData={formData} setFormData={setFormData} />
         </div>
         <div {...getAnimationProps(500)}>
-          <PastureAccess formData={formData} setFormData={setFormData} />
-        </div>
-        <div {...getAnimationProps(600)}>
           <SubmitButton formData={formData} />
         </div>
       </div>

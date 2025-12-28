@@ -6,10 +6,10 @@ export default function SubmitButton({ formData }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { workload, pasture } = formData;
+    const { workload} = formData;
 
-    if (!workload || !pasture) {
-      alert("Proszę uzupełnić wszystkie wymagane pola: użytkowanie, pastwisko.");
+    if (!workload) {
+      alert("Proszę uzupełnić wszystkie wymagane pola: użytkowanie");
       return;
     }
 

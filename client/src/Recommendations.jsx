@@ -62,7 +62,7 @@ export default function Recommendations() {
               key={idx}
               title={option.title}
               match={option.score || 0}
-              price={`${option.cena || 0} zł (${option.kosztMiesieczny || 0} zł/mies.)`}
+              price={`szacowany koszt miesięczny: ${option.kosztMiesieczny || 0} zł.`}
               items={(option.items || []).map(item => ({
                 name: item.nazwa,
                 img: item.zdjecie,
