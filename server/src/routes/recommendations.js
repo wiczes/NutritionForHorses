@@ -79,63 +79,72 @@ const basicInfoMapping = {
 };
 
 function calculateMonthlyCost(pasza, sieczka, mesz, suplementy, horseWeight) {
-    horseWeight = horseWeight || 500;
-
-    const suppList = Array.isArray(suplementy) ? suplementy : (suplementy ? [suplementy] : []);
-
-    let dailyFeedAmount = 0;
-    let dailyRoughageAmount = 0;
-    let dailyMashAmount = 0;
-    
-    let totalSupplementDoseKg = 0;
-    let totalSupplementMonthlyCost = 0;
-
-    const getDailyDoseInKG = (product) => {
-        if (!product || !product.dawkowanie || !Array.isArray(product.dawkowanie) || product.dawkowanie.length === 0) {
-            return 0;
-        }
-        const sumDose = product.dawkowanie.reduce((a, b) => a + b, 0);
-        const avgDoseInGrams = sumDose / product.dawkowanie.length;
-        let finalDailyGrams = 0;
-        if (product.kalkulowac_dawke === 'tak') {
-            finalDailyGrams = avgDoseInGrams * (horseWeight / 100.0);
-        } else {
-            finalDailyGrams = avgDoseInGrams;
-        }
-        return finalDailyGrams / 1000.0;
+    const parseNum = (val) => {
+        if (typeof val === 'number') return val;
+        if (!val) return 0;
+        const str = val.toString().replace(',', '.').replace(/[^\d.-]/g, '');
+        const parsed = parseFloat(str);
+        return isNaN(parsed) ? 0 : parsed;
     };
 
-    dailyFeedAmount = getDailyDoseInKG(pasza);
-    dailyRoughageAmount = getDailyDoseInKG(sieczka);
-    dailyMashAmount = getDailyDoseInKG(mesz);
+    const weight = parseNum(horseWeight) || 500;
+    const suppList = Array.isArray(suplementy) ? suplementy : (suplementy ? [suplementy] : []);
 
-    suppList.forEach(supp => {
-        const doseKg = getDailyDoseInKG(supp);
-        totalSupplementDoseKg += doseKg;
+    const calculateItemCost = (item, role) => {
+        if (!item) return { cost: 0, dailyKg: 0 };
 
-        const pricePerKg = supp ? (supp.cena / (supp.waga || 1)) : 0;
-        const monthlyAmount = doseKg * 30;
-        totalSupplementMonthlyCost += (monthlyAmount * pricePerKg);
+        const price = parseNum(item.cena);
+        let bagWeight = parseNum(item.waga);
+
+        if (bagWeight <= 0) bagWeight = 1;
+
+        const pricePerKg = price / bagWeight;
+
+        if (!item.dawkowanie || !Array.isArray(item.dawkowanie) || item.dawkowanie.length === 0) {
+            return { cost: 0, dailyKg: 0 };
+        }
+        const avgDoseGrams = item.dawkowanie.reduce((a, b) => parseNum(a) + parseNum(b), 0) / item.dawkowanie.length;
+        
+        let dailyGrams = 0;
+        const shouldCalc = item.kalkulowac_dawke && item.kalkulowac_dawke.toString().toLowerCase().trim() === 'tak';
+
+        if (shouldCalc) {
+            dailyGrams = avgDoseGrams * (weight / 100.0);
+        } else {
+            dailyGrams = avgDoseGrams;
+        }
+
+        const dailyKg = dailyGrams / 1000.0; 
+        const monthlyKg = dailyKg * 30; 
+        const monthlyItemCost = monthlyKg * pricePerKg;
+
+        return {
+            cost: monthlyItemCost,
+            dailyKg: dailyKg
+        };
+    };
+
+    const paszaCalc = calculateItemCost(pasza, 'Pasza');
+    const sieczkaCalc = calculateItemCost(sieczka, 'Sieczka');
+    const meszCalc = calculateItemCost(mesz, 'Mesz');
+    
+    let suppCost = 0;
+    let suppDailyKg = 0;
+
+    suppList.forEach(s => {
+        const res = calculateItemCost(s, 'Suplement');
+        suppCost += res.cost;
+        suppDailyKg += res.dailyKg;
     });
 
-    const monthlyFeedAmount = dailyFeedAmount * 30;
-    const monthlyRoughageAmount = dailyRoughageAmount * 30;
-    const monthlyMashAmount = dailyMashAmount * 30;
-
-    const feedPricePerKg = pasza ? (pasza.cena / (pasza.waga || 1)) : 0;
-    const roughagePricePerKg = sieczka ? (sieczka.cena / (sieczka.waga || 1)) : 0;
-    const mashPricePerKg = mesz ? (mesz.cena / (mesz.waga || 1)) : 0;
-
-    const monthlyCostFeed = monthlyFeedAmount * feedPricePerKg;
-    const monthlyCostRoughage = monthlyRoughageAmount * roughagePricePerKg;
-    const monthlyCostMash = monthlyMashAmount * mashPricePerKg;
+    const totalMonthlyCost = paszaCalc.cost + sieczkaCalc.cost + meszCalc.cost + suppCost;
 
     return {
-        dailyFeed: dailyFeedAmount.toFixed(2),
-        dailyRoughage: dailyRoughageAmount.toFixed(2),
-        dailyMash: dailyMashAmount.toFixed(2),
-        dailySupplement: totalSupplementDoseKg.toFixed(3), 
-        monthlyCost: Math.round(monthlyCostFeed + monthlyCostRoughage + monthlyCostMash + totalSupplementMonthlyCost)
+        dailyFeed: paszaCalc.dailyKg.toFixed(2),
+        dailyRoughage: sieczkaCalc.dailyKg.toFixed(2),
+        dailyMash: meszCalc.dailyKg.toFixed(2),
+        dailySupplement: suppDailyKg.toFixed(3),
+        monthlyCost: Math.round(totalMonthlyCost)
     };
 }
 
@@ -410,29 +419,70 @@ const sieczki = feeds.filter(f => f.typ === "sieczka");
     const alternatywaCost = calculateMonthlyCost(alternatywaPasza, alternatywaSieczka, alternatywaMesz, alternatywneSuplementy, weight || 500);
     const ekonomicznaCost = calculateMonthlyCost(ekonomicznaPasza, ekonomicznaSieczka, ekonomicznyMesz, ekonomiczneSuplementy, weight || 500);
 
+    const calculateSingleDoseGrams = (product, horseWeight) => {
+        if (!product || !product.dawkowanie || !Array.isArray(product.dawkowanie) || product.dawkowanie.length === 0) {
+            return 0;
+        }
+        const avgDose = product.dawkowanie.reduce((a, b) => a + b, 0) / product.dawkowanie.length;
+        
+        let finalGrams = 0;
+        if (product.kalkulowac_dawke === 'tak') {
+            finalGrams = avgDose * ((horseWeight || 500) / 100.0);
+        } else {
+            finalGrams = avgDose;
+        }
+        return Math.round(finalGrams);
+    };
+
     const createRecommendation = (pasza, sieczka, mesz, supplementsList, cost) => {
         
-        let totalScore = (pasza?.score || 0) + (sieczka?.score || 0) + (mesz?.score || 0);
-        let itemsCount = 3;
+        const baseItems = [pasza, sieczka, mesz].filter(item => item !== null && item !== undefined);
         
+        let sumBaseScore = 0;
+        baseItems.forEach(item => sumBaseScore += (item.score || 0));
+        
+        const finalScore = baseItems.length > 0 
+            ? Math.round(sumBaseScore / baseItems.length) 
+            : 0;
+
         let supplementsPrice = 0;
-        
         supplementsList.forEach(s => {
-            totalScore += (s.score || 0);
             supplementsPrice += (s.cena || 0);
-            itemsCount++;
         });
 
-        const finalScore = Math.round(totalScore / itemsCount);
         const totalPrice = (pasza?.cena || 0) + (sieczka?.cena || 0) + (mesz?.cena || 0) + supplementsPrice;
 
         let items = [];
-        if (pasza) items.push({...pasza, role: 'pasza'});
-        if (sieczka) items.push({...sieczka, role: 'sieczka'});
-        if (mesz) items.push({...mesz, role: 'mesz'});
+        
+        const getDoseInGrams = (item) => {
+            if (!item || !item.dawkowanie || item.dawkowanie.length === 0) return 0;
+            const avg = item.dawkowanie.reduce((a, b) => a + b, 0) / item.dawkowanie.length;
+            
+            const currentWeight = weight || 500; 
+            
+            if (item.kalkulowac_dawke === 'tak') {
+                return Math.round(avg * (currentWeight / 100));
+            } else {
+                return Math.round(avg);
+            }
+        };
+
+        const addItem = (item, role) => {
+            if (item) {
+                items.push({
+                    ...item, 
+                    role: role,
+                    wyliczonaDawka: getDoseInGrams(item)
+                });
+            }
+        };
+
+        addItem(pasza, 'pasza');
+        addItem(sieczka, 'sieczka');
+        addItem(mesz, 'mesz');
         
         supplementsList.forEach(s => {
-            items.push({...s, role: 'suplement'});
+            addItem(s, 'suplement');
         });
 
         return {
@@ -448,7 +498,8 @@ const sieczki = feeds.filter(f => f.typ === "sieczka");
             items: items.map(item => ({
                 nazwa: item.nazwa,
                 zdjecie: item.zdjecie,
-                dawkowanie: item.dawkowanie,
+                dawkowanie: item.dawkowanie, 
+                wyliczonaDawka: item.wyliczonaDawka,
                 typ: item.typ,
                 cena: item.cena,
                 score: item.score,

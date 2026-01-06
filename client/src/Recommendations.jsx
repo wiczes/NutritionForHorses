@@ -47,7 +47,7 @@ export default function Recommendations() {
       return <div className="text-center text-xl font-semibold text-gray-600 z-10 relative">Brak danych do wyświetlenia.</div>;
     }
 
-    const options = [
+const options = [
       { title: "Największa zgodność", ...recommendations.najlepsza },
       { title: "Alternatywna opcja", ...recommendations.alternatywa },
       { title: "Opcja ekonomiczna", ...recommendations.ekonomiczna }
@@ -66,7 +66,7 @@ export default function Recommendations() {
               items={(option.items || []).map(item => ({
                 name: item.nazwa,
                 img: item.zdjecie,
-                dose: item.dawkowanie ? `Dawkowanie: ${item.dawkowanie.join(" - ")} g dziennie` : ""
+                dose: item.wyliczonaDawka ? `Dawka dzienna: ${item.wyliczonaDawka} g` : "Brak danych"
               }))}
             />
           ))}
