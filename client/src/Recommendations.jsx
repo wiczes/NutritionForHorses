@@ -15,7 +15,7 @@ export default function Recommendations() {
   useEffect(() => {
     if (!formData) return;
     setLoading(true);
-    fetch("http://localhost:5001/api/recommendations", {
+    fetch("https://nutritionforhorses.onrender.com/api/recommendations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData)

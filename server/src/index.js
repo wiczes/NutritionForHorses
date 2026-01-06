@@ -11,7 +11,8 @@ const app = express();
 
 app.use(express.json()); // parse JSON request bodies
 app.use(cors({
-  origin: 'http://localhost:5173'
+  //origin: 'http://localhost:5173',
+  origin: 'https://tangerine-gecko-e7458e.netlify.app'
 }));
 const feedsRouter = require('./routes/pasze');
 app.use('/api/pasze', feedsRouter);
