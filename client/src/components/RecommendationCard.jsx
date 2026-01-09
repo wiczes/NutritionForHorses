@@ -13,6 +13,7 @@ export default function RecommendationCard({ title, match, price, items }) {
             src={item.img}
             alt={item.name}
             className="w-32 h-32 object-cover rounded-lg shadow mb-2 border transition hover:scale-160"
+            crossOrigin="anonymous"
             />
             <div className="font-semibold">{item.name}</div>
             <div className="text-xs text-gray-400">{item.dose}</div>

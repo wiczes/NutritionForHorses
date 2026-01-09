@@ -16,6 +16,7 @@ export default function Recommendations() {
     if (!formData) return;
     setLoading(true);
     fetch("https://nutritionforhorses.onrender.com/api/recommendations", {
+    //fetch('http://localhost:5001/api/recommendations', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData)
@@ -54,7 +55,7 @@ const options = [
     ];
 
     return (
-      <main className="w-full max-w-7xl bg-white/70 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-10 border border-white/50 z-10 relative">
+      <main id="recommendation-content" className="w-full max-w-7xl bg-white/70 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-10 border border-white/50 z-10 relative">
         <RecommendationHeader formData={formData} />
         <div className="flex flex-col md:flex-row gap-6 justify-center mb-8">
           {options.map((option, idx) => (
